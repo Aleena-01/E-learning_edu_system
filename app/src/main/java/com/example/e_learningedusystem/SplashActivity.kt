@@ -14,6 +14,9 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        // Initialize our Persistent Data Manager
+        AppData.init(this)
+
         val imgLogo = findViewById<ImageView>(R.id.imgLogo)
         val txtAppName = findViewById<TextView>(R.id.txtAppName)
 

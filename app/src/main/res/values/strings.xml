@@ -2,4 +2,9 @@
     <string name="app_name">EduVerse</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="welcome_subtitle">Empower your future with world-class learning at your fingertips.</string>
+    <string name="get_started">Get Started</string>
+    <string name="already_have_account">Already have an account? Sign In</string>
+    <string name="logo_description">App Logo</string>
 </resources>

@@ -12,21 +12,19 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class TeacherDashboardActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var db: DatabaseHelper
     private lateinit var adapter: CourseAdapter
     private var userId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+        setContentView(R.layout.activity_teacher_dashboard)
         
-        db = DatabaseHelper(this)
         userId = intent.getIntExtra("USER_ID", -1)
         val userName = intent.getStringExtra("USER_NAME")
 
@@ -47,7 +45,9 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { item ->
             if (item.itemId == R.id.nav_logout) {
-                startActivity(Intent(this, LoginActivity::class.java))
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 finish()
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -57,31 +57,37 @@ class TeacherDashboardActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewCourses)
         recyclerView.layoutManager = LinearLayoutManager(this)
         
+        loadDashboardStats()
         loadCourses()
 
-        findViewById<FloatingActionButton>(R.id.fabAddCourse).setOnClickListener {
+        findViewById<ExtendedFloatingActionButton>(R.id.fabAddCourse).setOnClickListener {
             val intent = Intent(this, AddCourseActivity::class.java)
             intent.putExtra("TEACHER_ID", userId)
             startActivity(intent)
         }
     }
 
+    private fun loadDashboardStats() {
+        val teacherCourses = AppData.courses.filter { it.teacherId == userId }
+        val studentsCount = AppData.getEnrolledCount(userId)
+
+        findViewById<TextView>(R.id.tvTotalCourses).text = teacherCourses.size.toString()
+        findViewById<TextView>(R.id.tvTotalStudents).text = studentsCount.toString()
+    }
+
     private fun loadCourses() {
-        val allCourses = db.getAllCourses()
-        // Filter courses for this teacher
-        val teacherCourses = allCourses.filter { it.teacherId == userId }
+        val teacherCourses = AppData.courses.filter { it.teacherId == userId }
         
         adapter = CourseAdapter(teacherCourses.toMutableList(), object : CourseAdapter.OnCourseClickListener {
-            override fun onEdit(course: Course) {
-                Toast.makeText(this@TeacherDashboardActivity, "Edit feature coming soon", Toast.LENGTH_SHORT).show()
-            }
+            override fun onEdit(course: Course) {}
 
             override fun onDelete(course: Course, position: Int) {
                 AlertDialog.Builder(this@TeacherDashboardActivity)
                     .setTitle("Delete Course")
                     .setMessage("Are you sure?")
                     .setPositiveButton("Yes") { _, _ ->
-                        // Add DB delete logic if needed
+                        AppData.courses.remove(course)
+                        AppData.saveData(this@TeacherDashboardActivity)
                         adapter.removeAt(position)
                     }
                     .setNegativeButton("No", null)
@@ -90,7 +96,10 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
             override fun onItemClick(course: Course) {
                 val intent = Intent(this@TeacherDashboardActivity, CourseActivity::class.java)
+                intent.putExtra("courseId", course.id)
                 intent.putExtra("courseName", course.title)
+                intent.putExtra("teacherName", course.teacherName)
+                intent.putExtra("isTeacher", true)
                 startActivity(intent)
             }
         })
@@ -99,6 +108,7 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        loadDashboardStats()
         loadCourses()
     }
 }

@@ -10,14 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 
 class AddCourseActivity : AppCompatActivity() {
 
-    private lateinit var db: DatabaseHelper
     private var teacherId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_course)
 
-        db = DatabaseHelper(this)
         teacherId = intent.getIntExtra("TEACHER_ID", -1)
 
         val etTitle = findViewById<EditText>(R.id.etCourseTitle)
@@ -38,16 +36,24 @@ class AddCourseActivity : AppCompatActivity() {
                 if (title.isEmpty() || desc.isEmpty()) {
                     Toast.makeText(this, "Title and Description are required", Toast.LENGTH_SHORT).show()
                 } else {
-                    val course = Course(teacherId = teacherId, title = title, description = desc, category = cat, videoUrl = url)
-                    val result = db.addCourse(course)
-                    if (result != -1L) {
-                        showSuccessDialog()
-                        // Trigger Custom Broadcast
-                        val intent = Intent("com.example.EDU_VERSE_COURSE_ADDED")
-                        sendBroadcast(intent)
-                    } else {
-                        Toast.makeText(this, "Failed to add course", Toast.LENGTH_SHORT).show()
-                    }
+                    val teacherName = AppData.getUserById(teacherId)?.name ?: "Instructor"
+                    val course = Course(
+                        teacherId = teacherId, 
+                        title = title, 
+                        description = desc, 
+                        category = cat, 
+                        videoUrl = url,
+                        teacherName = teacherName
+                    )
+                    
+                    // Save to persistent ArrayList storage
+                    AppData.addCourse(this, course)
+                    
+                    showSuccessDialog()
+                    
+                    // Custom Broadcast still works fine
+                    val intent = Intent("com.example.EDU_VERSE_COURSE_ADDED")
+                    sendBroadcast(intent)
                 }
             }
         }
@@ -55,8 +61,8 @@ class AddCourseActivity : AppCompatActivity() {
 
     private fun showSuccessDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Information")
-            .setMessage("Course added successfully!")
+            .setTitle("Success")
+            .setMessage("Course published successfully!")
             .setPositiveButton("OK") { _, _ -> finish() }
             .show()
     }

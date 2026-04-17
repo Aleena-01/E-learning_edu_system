@@ -9,18 +9,21 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background_light">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:elevation="0dp"
+            android:background="@android:color/transparent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@drawable/gradient_bg"
+                android:background="@color/surface_white"
+                app:titleTextColor="@color/primary_blue"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -34,7 +37,8 @@
                 android:id="@+id/recyclerViewCourses"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
+                android:padding="12dp"
+                android:clipToPadding="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,9 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="24dp"
+            android:contentDescription="Add Course"
             android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/purple_500"
-            app:tint="@color/white" />
+            app:backgroundTint="@color/secondary_teal"
+            app:tint="@color/white"
+            app:elevation="6dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -61,6 +67,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
+        app:itemIconTint="@color/primary_blue"
+        app:itemTextColor="@color/text_primary"
         app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

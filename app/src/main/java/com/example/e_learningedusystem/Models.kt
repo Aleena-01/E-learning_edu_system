@@ -5,8 +5,13 @@ data class User(
     val name: String,
     val email: String,
     val role: String, // "Teacher" or "Student"
-    val education: String,
-    val skills: String
+    val education: String = "",
+    val skills: String = "",
+    val interests: String = "",
+    val profilePic: String = "",
+    val certifications: String = "",
+    val resume: String = "",
+    val bio: String = ""
 )
 
 data class Course(
@@ -15,7 +20,8 @@ data class Course(
     val title: String,
     val description: String,
     val category: String, // Link to skills
-    val videoUrl: String = ""
+    val videoUrl: String = "",
+    val teacherName: String = "" // Useful for display
 )
 
 data class Quiz(

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvProfileTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Complete Your Profile"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="24dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="#80FFFFFF"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvProfileTitle" />
+
+        <TextView
+            android:id="@+id/tvUploadPic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Upload Profile Picture"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivProfilePic" />
+
+        <EditText
+            android:id="@+id/etBio"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/white"
+            android:gravity="top"
+            android:hint="Bio/About You"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/tvUploadPic" />
+
+        <!-- Role Specific Fields: Teacher -->
+        <LinearLayout
+            android:id="@+id/llTeacherFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/etBio">
+
+            <EditText
+                android:id="@+id/etInterests"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/white"
+                android:hint="Interests/Specialization"
+                android:paddingStart="16dp" />
+
+            <EditText
+                android:id="@+id/etCertifications"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/white"
+                android:hint="Certifications"
+                android:paddingStart="16dp" />
+
+            <EditText
+                android:id="@+id/etResumeLink"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/white"
+                android:hint="Resume/Portfolio Link"
+                android:paddingStart="16dp" />
+        </LinearLayout>
+
+        <!-- Role Specific Fields: Student -->
+        <LinearLayout
+            android:id="@+id/llStudentFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/llTeacherFields">
+
+            <EditText
+                android:id="@+id/etEducation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/white"
+                android:hint="Current Education"
+                android:paddingStart="16dp" />
+
+            <EditText
+                android:id="@+id/etSkills"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/white"
+                android:hint="Skills to Learn/Have"
+                android:paddingStart="16dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCompleteSignup"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/rounded_button"
+            android:text="Finish Signup"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/llStudentFields"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

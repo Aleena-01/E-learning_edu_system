@@ -29,6 +29,7 @@
 
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".SignupActivity" />
+        <activity android:name=".ProfileSetupActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".StudentDashboardActivity" />
         <activity android:name=".TeacherDashboardActivity" />
