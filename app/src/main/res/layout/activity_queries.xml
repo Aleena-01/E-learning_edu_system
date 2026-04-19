@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarQueries"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/surface_white"
+            app:title="Course Queries"
+            app:titleTextColor="@color/primary_blue" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvQueries"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_query" />
+
+    <!-- Student only: Ask Query Section -->
+    <LinearLayout
+        android:id="@+id/llAskQuery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/surface_white"
+        android:elevation="8dp"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/etQuery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Ask a question..."
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="#F0F4F8"
+            android:padding="12dp"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/btnSendQuery"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:src="@android:drawable/ic_menu_send"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/primary_blue"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+</LinearLayout>

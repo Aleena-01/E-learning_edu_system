@@ -3,145 +3,126 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    android:fillViewport="true">
+    android:background="@color/background_light">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/tvProfileTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:text="Complete Your Profile"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivProfilePic"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="24dp"
-            android:src="@android:drawable/ic_menu_camera"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="#80FFFFFF"
-            android:scaleType="centerInside"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvProfileTitle" />
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/primary_blue"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/tvUploadPic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Upload Profile Picture"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivProfilePic" />
+            android:text="Tell us more about your background"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="32dp"/>
 
-        <EditText
-            android:id="@+id/etBio"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/white"
-            android:gravity="top"
-            android:hint="Bio/About You"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/tvUploadPic" />
-
-        <!-- Role Specific Fields: Teacher -->
+        <!-- Teacher Specific Fields -->
         <LinearLayout
             android:id="@+id/llTeacherFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/etBio">
+            android:visibility="gone">
 
             <EditText
-                android:id="@+id/etInterests"
+                android:id="@+id/etQualification"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="56dp"
+                android:hint="Qualification (e.g. Master's in CS)"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/white"
-                android:hint="Interests/Specialization"
-                android:paddingStart="16dp" />
+                android:backgroundTint="@color/surface_white"
+                android:paddingStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"/>
 
             <EditText
-                android:id="@+id/etCertifications"
+                android:id="@+id/etExperience"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="56dp"
+                android:hint="Experience (e.g. 5 Years)"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/white"
-                android:hint="Certifications"
-                android:paddingStart="16dp" />
+                android:backgroundTint="@color/surface_white"
+                android:paddingStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"/>
 
             <EditText
-                android:id="@+id/etResumeLink"
+                android:id="@+id/etExpertise"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="56dp"
+                android:hint="Expertise Field (e.g. Android Development)"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/white"
-                android:hint="Resume/Portfolio Link"
-                android:paddingStart="16dp" />
+                android:backgroundTint="@color/surface_white"
+                android:paddingStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"/>
         </LinearLayout>
 
-        <!-- Role Specific Fields: Student -->
+        <!-- Student Specific Fields -->
         <LinearLayout
             android:id="@+id/llStudentFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/llTeacherFields">
+            android:visibility="gone">
 
             <EditText
-                android:id="@+id/etEducation"
+                android:id="@+id/etEducationLevel"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="56dp"
+                android:hint="Education Level (e.g. Undergraduate)"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/white"
-                android:hint="Current Education"
-                android:paddingStart="16dp" />
+                android:backgroundTint="@color/surface_white"
+                android:paddingStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"/>
 
             <EditText
-                android:id="@+id/etSkills"
+                android:id="@+id/etInterests"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
+                android:layout_height="100dp"
+                android:hint="Interests (comma separated)"
+                android:gravity="top"
+                android:padding="16dp"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/white"
-                android:hint="Skills to Learn/Have"
-                android:paddingStart="16dp" />
+                android:backgroundTint="@color/surface_white"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"/>
         </LinearLayout>
 
-        <Button
+        <EditText
+            android:id="@+id/etBio"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Tell us about yourself..."
+            android:gravity="top"
+            android:padding="16dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/surface_white"
+            android:layout_marginBottom="32dp"
+            android:elevation="2dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCompleteSignup"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_height="60dp"
+            android:text="Finish Registration"
             android:background="@drawable/rounded_button"
-            android:text="Finish Signup"
-            android:textAllCaps="false"
             android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/llStudentFields"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:elevation="4dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </ScrollView>

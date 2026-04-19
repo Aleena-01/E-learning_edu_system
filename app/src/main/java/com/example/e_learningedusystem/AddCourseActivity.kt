@@ -1,69 +1,79 @@
 package com.example.e_learningedusystem
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class AddCourseActivity : AppCompatActivity() {
 
     private var teacherId: Int = -1
+    private var courseId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_course)
 
         teacherId = intent.getIntExtra("TEACHER_ID", -1)
+        courseId = intent.getIntExtra("COURSE_ID", -1)
 
+        val tvTitle = findViewById<TextView>(R.id.tvAddCourseTitle)
         val etTitle = findViewById<EditText>(R.id.etCourseTitle)
         val etDesc = findViewById<EditText>(R.id.etCourseDesc)
-        val etCat = findViewById<EditText>(R.id.etCourseCategory)
-        val etUrl = findViewById<EditText>(R.id.etVideoUrl)
+        val etCategory = findViewById<EditText>(R.id.etCourseCategory)
+        val etDuration = findViewById<EditText>(R.id.etCourseDuration)
         val btnSave = findViewById<Button>(R.id.btnSaveCourse)
 
-        btnSave.setOnClickListener { v ->
-            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).withEndAction {
-                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100)
-
-                val title = etTitle.text.toString()
-                val desc = etDesc.text.toString()
-                val cat = etCat.text.toString()
-                val url = etUrl.text.toString()
-
-                if (title.isEmpty() || desc.isEmpty()) {
-                    Toast.makeText(this, "Title and Description are required", Toast.LENGTH_SHORT).show()
-                } else {
-                    val teacherName = AppData.getUserById(teacherId)?.name ?: "Instructor"
-                    val course = Course(
-                        teacherId = teacherId, 
-                        title = title, 
-                        description = desc, 
-                        category = cat, 
-                        videoUrl = url,
-                        teacherName = teacherName
-                    )
-                    
-                    // Save to persistent ArrayList storage
-                    AppData.addCourse(this, course)
-                    
-                    showSuccessDialog()
-                    
-                    // Custom Broadcast still works fine
-                    val intent = Intent("com.example.EDU_VERSE_COURSE_ADDED")
-                    sendBroadcast(intent)
-                }
+        // If editing, load existing data
+        if (courseId != -1) {
+            tvTitle.text = "Edit Course"
+            val course = AppData.courses.find { it.id == courseId }
+            course?.let {
+                etTitle.setText(it.title)
+                etDesc.setText(it.description)
+                etCategory.setText(it.category)
+                etDuration.setText(it.duration)
             }
         }
-    }
 
-    private fun showSuccessDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Success")
-            .setMessage("Course published successfully!")
-            .setPositiveButton("OK") { _, _ -> finish() }
-            .show()
+        btnSave.setOnClickListener {
+            val title = etTitle.text.toString().trim()
+            val desc = etDesc.text.toString().trim()
+            val cat = etCategory.text.toString().trim()
+            val dur = etDuration.text.toString().trim()
+
+            if (title.isEmpty() || desc.isEmpty() || cat.isEmpty() || dur.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (courseId == -1) {
+                // Add New
+                val teacherName = AppData.getUserById(teacherId)?.name ?: "Unknown"
+                val newCourse = Course(
+                    teacherId = teacherId,
+                    title = title,
+                    description = desc,
+                    category = cat,
+                    duration = dur,
+                    teacherName = teacherName
+                )
+                AppData.addCourse(this, newCourse)
+                Toast.makeText(this, "Course Created!", Toast.LENGTH_SHORT).show()
+            } else {
+                // Update Existing
+                val updatedCourse = AppData.courses.find { it.id == courseId }?.copy(
+                    title = title,
+                    description = desc,
+                    category = cat,
+                    duration = dur
+                )
+                updatedCourse?.let { AppData.updateCourse(this, it) }
+                Toast.makeText(this, "Course Updated!", Toast.LENGTH_SHORT).show()
+            }
+            finish()
+        }
     }
 }

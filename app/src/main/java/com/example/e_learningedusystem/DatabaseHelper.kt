@@ -9,7 +9,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "EduVerse.db"
-        private const val DATABASE_VERSION = 4 // Incremented version for enrollments
+        private const val DATABASE_VERSION = 5 // Incremented for new model fields
 
         private const val TABLE_USERS = "users"
         private const val TABLE_COURSES = "courses"
@@ -24,12 +24,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val KEY_USER_EMAIL = "email"
         private const val KEY_USER_PASS = "password"
         private const val KEY_USER_ROLE = "role"
-        private const val KEY_USER_EDU = "education"
-        private const val KEY_USER_SKILLS = "skills"
+        private const val KEY_USER_QUALIFICATION = "qualification"
+        private const val KEY_USER_EXPERIENCE = "experience"
+        private const val KEY_USER_EXPERTISE = "expertise"
+        private const val KEY_USER_EDU_LEVEL = "education_level"
         private const val KEY_USER_INTERESTS = "interests"
-        private const val KEY_USER_PIC = "profile_pic"
-        private const val KEY_USER_CERTS = "certifications"
-        private const val KEY_USER_RESUME = "resume"
         private const val KEY_USER_BIO = "bio"
 
         // Course
@@ -37,21 +36,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val KEY_COURSE_TITLE = "title"
         private const val KEY_COURSE_DESC = "description"
         private const val KEY_COURSE_CAT = "category"
-        private const val KEY_COURSE_VIDEO = "video_url"
+        private const val KEY_COURSE_DURATION = "duration"
 
         // Quiz
         private const val KEY_QUIZ_COURSE_ID = "course_id"
         private const val KEY_QUIZ_QUES = "question"
-        private const val KEY_QUIZ_A = "opt_a"
-        private const val KEY_QUIZ_B = "opt_b"
-        private const val KEY_QUIZ_C = "opt_c"
-        private const val KEY_QUIZ_D = "opt_d"
         private const val KEY_QUIZ_ANS = "answer"
-
-        // Assignment
-        private const val KEY_ASGN_COURSE_ID = "course_id"
-        private const val KEY_ASGN_TITLE = "title"
-        private const val KEY_ASGN_DESC = "description"
 
         // Enrollment
         private const val KEY_ENROLL_COURSE_ID = "course_id"
@@ -59,10 +49,35 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("CREATE TABLE $TABLE_USERS($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_USER_NAME TEXT, $KEY_USER_EMAIL TEXT, $KEY_USER_PASS TEXT, $KEY_USER_ROLE TEXT, $KEY_USER_EDU TEXT, $KEY_USER_SKILLS TEXT, $KEY_USER_INTERESTS TEXT, $KEY_USER_PIC TEXT, $KEY_USER_CERTS TEXT, $KEY_USER_RESUME TEXT, $KEY_USER_BIO TEXT)")
-        db?.execSQL("CREATE TABLE $TABLE_COURSES($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_COURSE_TEACHER_ID INTEGER, $KEY_COURSE_TITLE TEXT, $KEY_COURSE_DESC TEXT, $KEY_COURSE_CAT TEXT, $KEY_COURSE_VIDEO TEXT)")
-        db?.execSQL("CREATE TABLE $TABLE_QUIZZES($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_QUIZ_COURSE_ID INTEGER, $KEY_QUIZ_QUES TEXT, $KEY_QUIZ_A TEXT, $KEY_QUIZ_B TEXT, $KEY_QUIZ_C TEXT, $KEY_QUIZ_D TEXT, $KEY_QUIZ_ANS TEXT)")
-        db?.execSQL("CREATE TABLE $TABLE_ASSIGNMENTS($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_ASGN_COURSE_ID INTEGER, $KEY_ASGN_TITLE TEXT, $KEY_ASGN_DESC TEXT)")
+        db?.execSQL("""
+            CREATE TABLE $TABLE_USERS(
+                $KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+                $KEY_USER_NAME TEXT, 
+                $KEY_USER_EMAIL TEXT, 
+                $KEY_USER_PASS TEXT, 
+                $KEY_USER_ROLE TEXT, 
+                $KEY_USER_QUALIFICATION TEXT, 
+                $KEY_USER_EXPERIENCE TEXT, 
+                $KEY_USER_EXPERTISE TEXT, 
+                $KEY_USER_EDU_LEVEL TEXT, 
+                $KEY_USER_INTERESTS TEXT, 
+                $KEY_USER_BIO TEXT
+            )
+        """.trimIndent())
+        
+        db?.execSQL("""
+            CREATE TABLE $TABLE_COURSES(
+                $KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+                $KEY_COURSE_TEACHER_ID INTEGER, 
+                $KEY_COURSE_TITLE TEXT, 
+                $KEY_COURSE_DESC TEXT, 
+                $KEY_COURSE_CAT TEXT, 
+                $KEY_COURSE_DURATION TEXT
+            )
+        """.trimIndent())
+        
+        db?.execSQL("CREATE TABLE $TABLE_QUIZZES($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_QUIZ_COURSE_ID INTEGER, $KEY_QUIZ_QUES TEXT, $KEY_QUIZ_ANS TEXT)")
+        db?.execSQL("CREATE TABLE $TABLE_ASSIGNMENTS($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_QUIZ_COURSE_ID INTEGER, $KEY_COURSE_TITLE TEXT, $KEY_COURSE_DESC TEXT)")
         db?.execSQL("CREATE TABLE $TABLE_ENROLLMENTS($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, $KEY_ENROLL_COURSE_ID INTEGER, $KEY_ENROLL_STUDENT_ID INTEGER)")
     }
 
@@ -75,18 +90,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
-    fun addUser(user: User, pass: String): Long {
+    fun addUser(user: User): Long {
         val values = ContentValues().apply {
             put(KEY_USER_NAME, user.name)
             put(KEY_USER_EMAIL, user.email)
-            put(KEY_USER_PASS, pass)
+            put(KEY_USER_PASS, user.password)
             put(KEY_USER_ROLE, user.role)
-            put(KEY_USER_EDU, user.education)
-            put(KEY_USER_SKILLS, user.skills)
+            put(KEY_USER_QUALIFICATION, user.qualification)
+            put(KEY_USER_EXPERIENCE, user.experience)
+            put(KEY_USER_EXPERTISE, user.expertise)
+            put(KEY_USER_EDU_LEVEL, user.educationLevel)
             put(KEY_USER_INTERESTS, user.interests)
-            put(KEY_USER_PIC, user.profilePic)
-            put(KEY_USER_CERTS, user.certifications)
-            put(KEY_USER_RESUME, user.resume)
             put(KEY_USER_BIO, user.bio)
         }
         return writableDatabase.insert(TABLE_USERS, null, values)
@@ -97,9 +111,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         var user: User? = null
         if (cursor.moveToFirst()) {
             user = User(
-                cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4),
-                cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8),
-                cursor.getString(9), cursor.getString(10), cursor.getString(11)
+                id = cursor.getInt(0),
+                name = cursor.getString(1),
+                email = cursor.getString(2),
+                password = cursor.getString(3),
+                role = cursor.getString(4),
+                qualification = cursor.getString(5),
+                experience = cursor.getString(6),
+                expertise = cursor.getString(7),
+                educationLevel = cursor.getString(8),
+                interests = cursor.getString(9),
+                bio = cursor.getString(10)
             )
         }
         cursor.close()
@@ -111,9 +133,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         var user: User? = null
         if (cursor.moveToFirst()) {
             user = User(
-                cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4),
-                cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8),
-                cursor.getString(9), cursor.getString(10), cursor.getString(11)
+                id = cursor.getInt(0),
+                name = cursor.getString(1),
+                email = cursor.getString(2),
+                password = cursor.getString(3),
+                role = cursor.getString(4),
+                qualification = cursor.getString(5),
+                experience = cursor.getString(6),
+                expertise = cursor.getString(7),
+                educationLevel = cursor.getString(8),
+                interests = cursor.getString(9),
+                bio = cursor.getString(10)
             )
         }
         cursor.close()
@@ -126,7 +156,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(KEY_COURSE_TITLE, course.title)
             put(KEY_COURSE_DESC, course.description)
             put(KEY_COURSE_CAT, course.category)
-            put(KEY_COURSE_VIDEO, course.videoUrl)
+            put(KEY_COURSE_DURATION, course.duration)
         }
         return writableDatabase.insert(TABLE_COURSES, null, values)
     }
@@ -138,7 +168,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             do {
                 val teacherId = cursor.getInt(1)
                 val teacher = getUserById(teacherId)
-                list.add(Course(cursor.getInt(0), teacherId, cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), teacher?.name ?: "Unknown"))
+                list.add(Course(
+                    id = cursor.getInt(0),
+                    teacherId = teacherId,
+                    title = cursor.getString(2),
+                    description = cursor.getString(3),
+                    category = cursor.getString(4),
+                    duration = cursor.getString(5),
+                    teacherName = teacher?.name ?: "Unknown"
+                ))
             } while (cursor.moveToNext())
         }
         cursor.close()
@@ -171,9 +209,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         if (cursor.moveToFirst()) {
             do {
                 list.add(User(
-                    cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4),
-                    cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8),
-                    cursor.getString(9), cursor.getString(10), cursor.getString(11)
+                    id = cursor.getInt(0),
+                    name = cursor.getString(1),
+                    email = cursor.getString(2),
+                    password = cursor.getString(3),
+                    role = cursor.getString(4),
+                    qualification = cursor.getString(5),
+                    experience = cursor.getString(6),
+                    expertise = cursor.getString(7),
+                    educationLevel = cursor.getString(8),
+                    interests = cursor.getString(9),
+                    bio = cursor.getString(10)
                 ))
             } while (cursor.moveToNext())
         }

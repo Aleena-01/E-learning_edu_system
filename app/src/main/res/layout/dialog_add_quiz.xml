@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Question Text"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etOptA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option A" />
+
+    <EditText
+        android:id="@+id/etOptB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option B" />
+
+    <EditText
+        android:id="@+id/etOptC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option C" />
+
+    <EditText
+        android:id="@+id/etOptD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option D" />
+
+    <EditText
+        android:id="@+id/etCorrectIndex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correct Option Index (0-3)"
+        android:inputType="number" />
+
+</LinearLayout>

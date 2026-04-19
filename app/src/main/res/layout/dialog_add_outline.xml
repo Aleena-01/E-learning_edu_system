@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/etItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Content Title (e.g. Intro to Kotlin)"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etWeekDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Week/Day (e.g. Week 1)"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content Type:"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spItemType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Dynamic Fields Container -->
+        <LinearLayout
+            android:id="@+id/llDynamicFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Video/Doc/Assignment Link or File Info -->
+            <EditText
+                android:id="@+id/etContentLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Link (e.g. Drive/YouTube)"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload from Files/Gallery"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <TextView
+                android:id="@+id/tvSelectedFile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No file selected"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="Description/Instructions"
+                android:gravity="top"
+                android:padding="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

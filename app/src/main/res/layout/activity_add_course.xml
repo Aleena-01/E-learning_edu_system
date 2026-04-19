@@ -1,179 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface_white"
-        android:elevation="0dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarAddCourse"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Create New Course"
-            app:titleTextColor="@color/primary_blue"
-            app:navigationIcon="?attr/homeAsUpIndicator" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvAddCourseTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:text="Create New Course"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/primary_blue"
+            android:layout_marginBottom="32dp"/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:contentPadding="20dp">
+        <EditText
+            android:id="@+id/etCourseTitle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Course Title"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/surface_white"
+            android:paddingStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        <EditText
+            android:id="@+id/etCourseDesc"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Course Description"
+            android:gravity="top"
+            android:padding="16dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/surface_white"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Basic Information"
-                        android:textColor="@color/primary_blue"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+        <EditText
+            android:id="@+id/etCourseCategory"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Category (e.g. Programming)"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/surface_white"
+            android:paddingStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="Course Title"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp">
+        <EditText
+            android:id="@+id/etCourseDuration"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Duration (e.g. 4 Weeks)"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/surface_white"
+            android:paddingStart="16dp"
+            android:layout_marginBottom="32dp"
+            android:elevation="2dp"/>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCourseTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapWords" />
-                    </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaveCourse"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Save Course"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:elevation="4dp"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Category"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCourseCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapWords" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Description"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCourseDesc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="top"
-                            android:inputType="textMultiLine"
-                            android:lines="4" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:contentPadding="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Media Content"
-                        android:textColor="@color/primary_blue"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="YouTube Video URL"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:helperText="Paste the link to your course video">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etVideoUrl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textUri" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSaveCourse"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/rounded_button"
-                android:elevation="4dp"
-                android:text="Publish Course"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>

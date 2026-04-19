@@ -1,175 +1,267 @@
 package com.example.e_learningedusystem
 
-import android.animation.ObjectAnimator
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.DecelerateInterpolator
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.card.MaterialCardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class CourseActivity : AppCompatActivity() {
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var tvProgressText: TextView
-    private lateinit var btnMarkComplete: Button
-    private var progress = 0
-    private var teacherId: Int = -1
     private var courseId: Int = -1
     private var isTeacher: Boolean = false
+    private var currentUserId: Int = -1
+    private lateinit var adapter: OutlineAdapter
+    private val outlineItems = mutableListOf<OutlineItem>()
+    
+    private var tempFileUri: String = ""
+    private var tvSelectedFileRef: TextView? = null
+
+    private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            data?.data?.let { uri ->
+                tempFileUri = uri.toString()
+                tvSelectedFileRef?.text = "Selected: ${getFileName(uri)}"
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbarCourse)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         courseId = intent.getIntExtra("courseId", -1)
-        val courseName = intent.getStringExtra("courseName")
-        val teacherName = intent.getStringExtra("teacherName")
-        teacherId = intent.getIntExtra("teacherId", -1)
         isTeacher = intent.getBooleanExtra("isTeacher", false)
+        currentUserId = intent.getIntExtra("studentId", -1)
+        if (currentUserId == -1) currentUserId = intent.getIntExtra("teacherId", -1)
 
-        val tvTitle = findViewById<TextView>(R.id.tvCourseTitle)
-        val tvTeacherInfo = findViewById<TextView>(R.id.tvTeacherInfo)
-        
-        tvTitle.text = courseName ?: "Course Details"
-        tvTeacherInfo.text = "By: ${teacherName ?: "Instructor"}"
+        val course = AppData.courses.find { it.id == courseId } ?: return
 
-        tvTeacherInfo.setOnClickListener {
-            if (teacherId != -1) {
-                showTeacherProfile(teacherId)
-            }
-        }
+        setupToolbar(course.title)
+        setupCourseHeader(course)
+        setupOutlineRecyclerView()
 
-        progressBar = findViewById(R.id.progressBar)
-        tvProgressText = findViewById(R.id.tvProgressText)
-        btnMarkComplete = findViewById(R.id.btnMarkComplete)
+        val btnEnroll = findViewById<Button>(R.id.btnMarkComplete) // Reusing button for Enroll/Cert
 
         if (isTeacher) {
-            setupTeacherView()
+            findViewById<LinearLayout>(R.id.llTeacherTools).visibility = View.VISIBLE
+            findViewById<LinearLayout>(R.id.llStudentProgress).visibility = View.GONE
+            findViewById<Button>(R.id.btnAddOutlineItem).setOnClickListener { showAddOutlineDialog() }
+            btnEnroll.visibility = View.GONE
         } else {
-            setupStudentView()
-        }
-    }
-
-    private fun setupTeacherView() {
-        btnMarkComplete.visibility = View.GONE
-        tvProgressText.visibility = View.GONE
-        progressBar.visibility = View.GONE
-        
-        val detailsLayout = findViewById<TextView>(R.id.tvCourseDetails).parent as LinearLayout
-        
-        val teacherActionsCard = MaterialCardView(this).apply {
-            radius = 32f
-            elevation = 8f
-            setContentPadding(40, 40, 40, 40)
-        }
-        
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.match_parent,
-            LinearLayout.LayoutParams.wrap_content
-        )
-        params.setMargins(0, 48, 0, 0)
-        teacherActionsCard.layoutParams = params
-
-        val actionLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-        }
-
-        val actionTitle = TextView(this).apply {
-            text = "Instructor Tools"
-            textSize = 20f
-            setTypeface(null, android.graphics.Typeface.BOLD)
-            setTextColor(getColor(R.color.primary_blue))
-        }
-
-        val btnViewStudents = Button(this).apply {
-            text = "View Enrolled Students"
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.match_parent,
-                140
-            ).apply { setMargins(0, 30, 0, 0) }
-            setBackgroundResource(R.drawable.rounded_button)
-            setTextColor(getColor(R.color.white))
-            setOnClickListener { showEnrolledStudents() }
-        }
-
-        actionLayout.addView(actionTitle)
-        actionLayout.addView(btnViewStudents)
-        teacherActionsCard.addView(actionLayout)
-        detailsLayout.addView(teacherActionsCard)
-    }
-
-    private fun showEnrolledStudents() {
-        // Find students enrolled in this course from AppData
-        val studentIds = AppData.enrollments.filter { it.first == courseId }.map { it.second }
-        val students = AppData.users.filter { it.id in studentIds }
-
-        if (students.isEmpty()) {
-            Toast.makeText(this, "No students enrolled yet", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val studentNames = students.map { it.name }.toTypedArray()
-        AlertDialog.Builder(this)
-            .setTitle("Course Students")
-            .setItems(studentNames, null)
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
-    private fun setupStudentView() {
-        // Enroll student automatically if not already
-        val studentId = intent.getIntExtra("studentId", -1)
-        if (studentId != -1) {
-            AppData.enrollStudent(this, courseId, studentId)
-        }
-
-        btnMarkComplete.setOnClickListener {
-            if (progress < 100) {
-                progress += 20
-                animateProgressBar(progress)
-                tvProgressText.text = "$progress%"
-                
-                if (progress == 100) {
-                    btnMarkComplete.text = "Course Completed"
-                    btnMarkComplete.isEnabled = false
-                    Toast.makeText(this, "Great job! Course complete.", Toast.LENGTH_LONG).show()
+            val isEnrolled = AppData.enrollments.contains(Pair(courseId, currentUserId))
+            if (isEnrolled) {
+                setupStudentProgress()
+            } else {
+                findViewById<LinearLayout>(R.id.llStudentProgress).visibility = View.GONE
+                btnEnroll.visibility = View.VISIBLE
+                btnEnroll.text = "Enroll in Course"
+                btnEnroll.setOnClickListener {
+                    AppData.enrollStudent(this, courseId, currentUserId)
+                    Toast.makeText(this, "Enrolled Successfully!", Toast.LENGTH_SHORT).show()
+                    recreate()
                 }
             }
         }
     }
 
-    private fun showTeacherProfile(id: Int) {
-        val teacher = AppData.getUserById(id)
-        if (teacher != null) {
-            AlertDialog.Builder(this)
-                .setTitle("About Instructor")
-                .setMessage("Name: ${teacher.name}\nBio: ${teacher.bio}\nSkills: ${teacher.skills}")
-                .setPositiveButton("Close", null)
-                .show()
+    private fun setupToolbar(title: String) {
+        val toolbar = findViewById<Toolbar>(R.id.toolbarCourse)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = title
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    private fun setupCourseHeader(course: Course) {
+        findViewById<TextView>(R.id.tvCourseTitle).text = course.title
+        findViewById<TextView>(R.id.tvTeacherInfo).text = "By: ${course.teacherName}"
+        findViewById<TextView>(R.id.tvCourseCategory).text = course.category
+        findViewById<TextView>(R.id.tvCourseDuration).text = course.duration
+        findViewById<TextView>(R.id.tvCourseDetails).text = course.description
+    }
+
+    private fun setupOutlineRecyclerView() {
+        val rvOutline = findViewById<RecyclerView>(R.id.rvOutline)
+        rvOutline.layoutManager = LinearLayoutManager(this)
+        loadOutlineData()
+        adapter = OutlineAdapter(outlineItems, isTeacher, currentUserId, object : OutlineAdapter.OnItemClickListener {
+            override fun onItemClick(item: OutlineItem) { handleOutlineItemClick(item) }
+            override fun onEdit(item: OutlineItem) { showAddOutlineDialog(item) }
+            override fun onDelete(item: OutlineItem, position: Int) {
+                AlertDialog.Builder(this@CourseActivity)
+                    .setTitle("Delete Content")
+                    .setMessage("Remove this item?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        AppData.outlines.remove(item)
+                        AppData.saveData(this@CourseActivity)
+                        loadOutlineData()
+                        adapter.notifyDataSetChanged()
+                    }.setNegativeButton("Cancel", null).show()
+            }
+            override fun onMarkComplete(item: OutlineItem) {
+                AppData.markItemComplete(this@CourseActivity, item.id, currentUserId)
+                loadOutlineData()
+                adapter.notifyDataSetChanged()
+                setupStudentProgress() // Update progress bar
+            }
+        })
+        rvOutline.adapter = adapter
+    }
+
+    private fun loadOutlineData() {
+        outlineItems.clear()
+        outlineItems.addAll(AppData.outlines.filter { it.courseId == courseId })
+    }
+
+    private fun setupStudentProgress() {
+        findViewById<LinearLayout>(R.id.llStudentProgress).visibility = View.VISIBLE
+        val pb = findViewById<ProgressBar>(R.id.progressBar)
+        val tvProgress = findViewById<TextView>(R.id.tvProgressText)
+        val btnCert = findViewById<Button>(R.id.btnMarkComplete)
+
+        // Progress based on "completions" list instead of submissions
+        val completedCount = outlineItems.count { AppData.isItemComplete(it.id, currentUserId) }
+        val progress = if (outlineItems.isEmpty()) 0 else (completedCount * 100 / outlineItems.size)
+        
+        pb.progress = progress
+        tvProgress.text = "$progress%"
+        if (progress == 100) {
+            btnCert.visibility = View.VISIBLE
+            btnCert.text = "Generate Certificate"
+            btnCert.setOnClickListener { generateCertificate() }
+        } else {
+            btnCert.visibility = View.GONE
         }
     }
 
-    private fun animateProgressBar(targetProgress: Int) {
-        ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, targetProgress).apply {
-            duration = 1000
-            interpolator = DecelerateInterpolator()
-            start()
+    private fun showAddOutlineDialog(itemToEdit: OutlineItem? = null) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_outline, null)
+        val etTitle = dialogView.findViewById<EditText>(R.id.etItemTitle)
+        val etWeekDay = dialogView.findViewById<EditText>(R.id.etWeekDay)
+        val etLink = dialogView.findViewById<EditText>(R.id.etContentLink)
+        val etDesc = dialogView.findViewById<EditText>(R.id.etDescription)
+        val btnUpload = dialogView.findViewById<Button>(R.id.btnUpload)
+        val tvSelectedFile = dialogView.findViewById<TextView>(R.id.tvSelectedFile)
+        val spType = dialogView.findViewById<Spinner>(R.id.spItemType)
+        
+        tvSelectedFileRef = tvSelectedFile
+        tempFileUri = itemToEdit?.contentUri ?: ""
+
+        val types = arrayOf("Video", "Document", "Assignment", "Quiz")
+        spType.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, types)
+
+        spType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedType = types[position]
+                etLink.visibility = if (selectedType == "Video" || selectedType == "Document") View.VISIBLE else View.GONE
+                etDesc.visibility = if (selectedType == "Assignment") View.VISIBLE else View.GONE
+                btnUpload.visibility = if (selectedType != "Quiz") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        itemToEdit?.let {
+            etTitle.setText(it.title)
+            etWeekDay.setText(it.weekOrDay)
+            etLink.setText(it.contentUri)
+            etDesc.setText(it.description)
+            spType.setSelection(types.indexOf(it.type))
+            if (it.contentUri.startsWith("content://")) tvSelectedFile.text = "File Attached"
+        }
+
+        btnUpload.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "*/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
+            filePickerLauncher.launch(intent)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(if (itemToEdit == null) "Add Content" else "Edit Content")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val title = etTitle.text.toString().trim()
+                val weekDay = etWeekDay.text.toString().trim()
+                val type = spType.selectedItem.toString()
+                val finalUri = if (tempFileUri.isNotEmpty()) tempFileUri else etLink.text.toString().trim()
+
+                if (title.isEmpty() || weekDay.isEmpty()) {
+                    Toast.makeText(this, "Title and Week required", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                if (itemToEdit == null) {
+                    val newItem = OutlineItem(courseId = courseId, title = title, type = type, weekOrDay = weekDay, contentUri = finalUri, description = etDesc.text.toString())
+                    AppData.addOutlineItem(this, newItem)
+                } else {
+                    val index = AppData.outlines.indexOf(itemToEdit)
+                    if (index != -1) {
+                        AppData.outlines[index] = itemToEdit.copy(title = title, type = type, weekOrDay = weekDay, contentUri = finalUri, description = etDesc.text.toString())
+                        AppData.saveData(this)
+                    }
+                }
+                loadOutlineData()
+                adapter.notifyDataSetChanged()
+            }
+            .setNegativeButton("Cancel", null).show()
+    }
+
+    private fun handleOutlineItemClick(item: OutlineItem) {
+        when (item.type) {
+            "Quiz" -> {
+                val intent = Intent(this, QuizActivity::class.java)
+                intent.putExtra("courseId", courseId)
+                intent.putExtra("outlineItemId", item.id)
+                intent.putExtra("userId", currentUserId)
+                startActivity(intent)
+            }
+            "Assignment" -> {
+                val intent = Intent(this, AssignmentActivity::class.java)
+                intent.putExtra("outlineItemId", item.id)
+                intent.putExtra("isTeacher", isTeacher)
+                intent.putExtra("studentId", currentUserId)
+                startActivity(intent)
+            }
+            else -> {
+                if (item.contentUri.startsWith("http")) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(item.contentUri)))
+                } else if (item.contentUri.isNotEmpty()) {
+                    Toast.makeText(this, "Opening File: ${item.title}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+    private fun getFileName(uri: Uri): String {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use { if (it.moveToFirst()) result = it.getString(it.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)) }
+        }
+        if (result == null) result = uri.path?.let { it.substring(it.lastIndexOf('/') + 1) }
+        return result ?: "Unknown"
+    }
+
+    private fun generateCertificate() {
+        val course = AppData.courses.find { it.id == courseId }
+        val user = AppData.getUserById(currentUserId)
+        val msg = "Certificate of Completion\n\n${user?.name} has completed ${course?.title}\nInstructor: ${course?.teacherName}"
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, msg)
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share Certificate"))
     }
 }
