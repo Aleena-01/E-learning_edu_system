@@ -25,6 +25,7 @@ class AddCourseActivity : AppCompatActivity() {
         val etCategory = findViewById<EditText>(R.id.etCourseCategory)
         val etDuration = findViewById<EditText>(R.id.etCourseDuration)
         val btnSave = findViewById<Button>(R.id.btnSaveCourse)
+        val btnCancel = findViewById<Button>(R.id.btnCancelCourse)
 
         // If editing, load existing data
         if (courseId != -1) {
@@ -36,6 +37,10 @@ class AddCourseActivity : AppCompatActivity() {
                 etCategory.setText(it.category)
                 etDuration.setText(it.duration)
             }
+        }
+
+        btnCancel.setOnClickListener {
+            finish()
         }
 
         btnSave.setOnClickListener {

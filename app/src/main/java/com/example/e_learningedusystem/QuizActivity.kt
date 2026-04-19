@@ -17,6 +17,7 @@ class QuizActivity : AppCompatActivity() {
     private var currentQuestionIndex = 0
     private var score = 0
     private var isTeacher = false
+    private var currentUserId = -1
 
     private lateinit var tvQuestion: TextView
     private lateinit var rgOptions: RadioGroup
@@ -29,7 +30,8 @@ class QuizActivity : AppCompatActivity() {
 
         courseId = intent.getIntExtra("courseId", -1)
         outlineItemId = intent.getIntExtra("outlineItemId", -1)
-        isTeacher = AppData.getUserById(intent.getIntExtra("userId", -1))?.role == "Teacher"
+        currentUserId = intent.getIntExtra("userId", -1)
+        isTeacher = AppData.getUserById(currentUserId)?.role == "Teacher"
 
         setupToolbar()
         initViews()
@@ -54,14 +56,15 @@ class QuizActivity : AppCompatActivity() {
         tvQuestion = findViewById(R.id.tvQuestion)
         rgOptions = findViewById(R.id.rgOptions)
         btnNext = findViewById(R.id.btnNext)
-        btnAddQuiz = Button(this).apply { 
-            text = "Add Question (Teacher Only)"
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120)
-            setOnClickListener { showAddQuestionDialog() }
-        }
         
         if (isTeacher) {
+            btnAddQuiz = Button(this).apply { 
+                text = "Add Question"
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120)
+                setOnClickListener { showAddQuestionDialog() }
+            }
             findViewById<LinearLayout>(R.id.llQuizContainer).addView(btnAddQuiz, 0)
+            btnNext.visibility = View.GONE // Teachers don't take the quiz
         }
 
         btnNext.setOnClickListener { handleNextClick() }
@@ -73,12 +76,13 @@ class QuizActivity : AppCompatActivity() {
 
     private fun displayQuestion() {
         if (quizList.isEmpty()) {
-            tvQuestion.text = if (isTeacher) "No questions added. Click the button above to add one." else "No questions available for this quiz yet."
+            tvQuestion.text = if (isTeacher) "No questions added yet." else "No questions available."
             btnNext.visibility = View.GONE
             return
         }
 
-        btnNext.visibility = View.VISIBLE
+        if (!isTeacher) btnNext.visibility = View.VISIBLE
+        
         val quiz = quizList[currentQuestionIndex]
         tvQuestion.text = "Question ${currentQuestionIndex + 1}/${quizList.size}\n\n${quiz.question}"
         
@@ -111,10 +115,15 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun showResult() {
+        // Save the result for the teacher to see
+        AppData.saveQuizResult(this, QuizResult(outlineItemId = outlineItemId, studentId = currentUserId, score = score, total = quizList.size))
+        AppData.markItemComplete(this, outlineItemId, currentUserId)
+
         AlertDialog.Builder(this)
-            .setTitle("Quiz Result")
-            .setMessage("Score: $score/${quizList.size}")
-            .setPositiveButton("OK") { _, _ -> finish() }.show()
+            .setTitle("Quiz Finished")
+            .setMessage("Your Score: $score/${quizList.size}")
+            .setCancelable(false)
+            .setPositiveButton("Done") { _, _ -> finish() }.show()
     }
 
     private fun showAddQuestionDialog() {
@@ -127,17 +136,21 @@ class QuizActivity : AppCompatActivity() {
         val etAns = view.findViewById<EditText>(R.id.etCorrectIndex)
 
         AlertDialog.Builder(this)
-            .setTitle("Add MCQ")
+            .setTitle("New MCQ Question")
             .setView(view)
-            .setPositiveButton("Add") { _, _ ->
-                val q = etQ.text.toString()
-                val options = listOf(etA.text.toString(), etB.text.toString(), etC.text.toString(), etD.text.toString())
+            .setPositiveButton("Save") { _, _ ->
+                val q = etQ.text.toString().trim()
+                val options = listOf(etA.text.toString().trim(), etB.text.toString().trim(), etC.text.toString().trim(), etD.text.toString().trim())
                 val ansIdx = etAns.text.toString().toIntOrNull() ?: 0
                 
-                val newQuiz = Quiz(courseId = courseId, outlineItemId = outlineItemId, question = q, options = options, correctOptionIndex = ansIdx)
-                AppData.addQuiz(this, newQuiz)
-                loadQuizData()
-                displayQuestion()
-            }.show()
+                if (q.isNotEmpty()) {
+                    val newQuiz = Quiz(courseId = courseId, outlineItemId = outlineItemId, question = q, options = options, correctOptionIndex = ansIdx)
+                    AppData.addQuiz(this, newQuiz)
+                    loadQuizData()
+                    displayQuestion()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }

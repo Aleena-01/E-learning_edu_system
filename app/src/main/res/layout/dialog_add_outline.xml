@@ -35,6 +35,41 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
 
+        <!-- MCQ Section (Visible only when Quiz is selected) -->
+        <LinearLayout
+            android:id="@+id/llMcqSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter First MCQ for this Quiz:"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etQuizQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Question text" />
+
+            <EditText android:id="@+id/etQuizOptA" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Option A" />
+            <EditText android:id="@+id/etQuizOptB" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Option B" />
+            <EditText android:id="@+id/etQuizOptC" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Option C" />
+            <EditText android:id="@+id/etQuizOptD" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Option D" />
+
+            <EditText
+                android:id="@+id/etQuizCorrectIndex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correct Option Index (0-3)"
+                android:inputType="number" />
+        </LinearLayout>
+
         <!-- Dynamic Fields Container -->
         <LinearLayout
             android:id="@+id/llDynamicFields"
@@ -42,7 +77,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Video/Doc/Assignment Link or File Info -->
             <EditText
                 android:id="@+id/etContentLink"
                 android:layout_width="match_parent"
@@ -55,7 +89,7 @@
                 android:id="@+id/btnUpload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload from Files/Gallery"
+                android:text="Upload File/Video"
                 android:layout_marginBottom="8dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 

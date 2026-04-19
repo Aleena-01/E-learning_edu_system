@@ -10,7 +10,7 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Light">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarCourse"
@@ -18,7 +18,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/surface_white"
             app:titleTextColor="@color/primary_blue"
-            app:navigationIcon="?attr/homeAsUpIndicator" />
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/primary_blue" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -135,6 +136,32 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="0%" />
+            </LinearLayout>
+
+            <!-- Teacher Section: Enrolled Students -->
+            <LinearLayout
+                android:id="@+id/llTeacherEnrolledStudents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enrolled Students &amp; Progress"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_blue" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvEnrolledStudents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_student_progress" />
             </LinearLayout>
 
             <TextView

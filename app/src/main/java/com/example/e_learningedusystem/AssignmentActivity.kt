@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -25,6 +26,8 @@ class AssignmentActivity : AppCompatActivity() {
         studentId = intent.getIntExtra("studentId", -1)
 
         val item = AppData.outlines.find { it.id == outlineItemId } ?: return
+        
+        setupToolbar(item.title)
         findViewById<TextView>(R.id.tvAsgnTitle).text = item.title
 
         if (isTeacher) {
@@ -32,6 +35,14 @@ class AssignmentActivity : AppCompatActivity() {
         } else {
             setupStudentView()
         }
+    }
+
+    private fun setupToolbar(title: String) {
+        val toolbar = findViewById<Toolbar>(R.id.toolbarAssignment)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = title
+        toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun setupStudentView() {

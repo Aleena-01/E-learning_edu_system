@@ -17,6 +17,12 @@ class SignupActivity : AppCompatActivity() {
         val etPass = findViewById<EditText>(R.id.etSignupPass)
         val rgRole = findViewById<RadioGroup>(R.id.rgRole)
         val btnNext = findViewById<Button>(R.id.btnSignup)
+        val tvLogin = findViewById<TextView>(R.id.tvLoginLink)
+
+        tvLogin.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         btnNext.setOnClickListener { v ->
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).withEndAction {

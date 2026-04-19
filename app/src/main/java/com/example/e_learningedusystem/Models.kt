@@ -43,6 +43,14 @@ data class Quiz(
     val correctOptionIndex: Int
 )
 
+data class QuizResult(
+    val id: Int = -1,
+    val outlineItemId: Int,
+    val studentId: Int,
+    val score: Int,
+    val total: Int
+)
+
 data class AssignmentSubmission(
     val id: Int = -1,
     val outlineItemId: Int,

@@ -1,104 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background_light">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarAssignment"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/surface_white"
+            app:title="Assignment"
+            app:titleTextColor="@color/primary_blue" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            android:id="@+id/tvAsgnTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Assignment Title"
-            android:textSize="24sp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/primary_blue" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <!-- Student View: Submit Section -->
         <LinearLayout
-            android:id="@+id/llStudentSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="20dp">
-
-            <EditText
-                android:id="@+id/etSubmissionText"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:hint="Type your response here..."
-                android:gravity="top"
-                android:padding="16dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="@color/surface_white"
-                android:elevation="2dp" />
-
-            <Button
-                android:id="@+id/btnUploadFile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Attach File (Optional)"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            android:padding="24dp">
 
             <TextView
-                android:id="@+id/tvFileName"
+                android:id="@+id/tvAsgnTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="No file selected"
-                android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/btnSubmitAsgn"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="24dp"
-                android:text="Submit Assignment"
-                android:background="@drawable/rounded_button"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/tvSubmissionStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Status: Not Submitted"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Teacher View: Submissions List -->
-        <LinearLayout
-            android:id="@+id/llTeacherView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Student Submissions"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:text="Assignment Title"
+                android:textSize="24sp"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/primary_blue" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvSubmissions"
+            <!-- Student View: Submit Section -->
+            <LinearLayout
+                android:id="@+id/llStudentSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                tools:listitem="@layout/item_submission" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="20dp">
 
-    </LinearLayout>
-</ScrollView>
+                <EditText
+                    android:id="@+id/etSubmissionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:hint="Type your response here..."
+                    android:gravity="top"
+                    android:padding="16dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/surface_white"
+                    android:elevation="2dp" />
+
+                <Button
+                    android:id="@+id/btnUploadFile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Attach File (Optional)"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <TextView
+                    android:id="@+id/tvFileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="No file selected"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnSubmitAsgn"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Submit Assignment"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvSubmissionStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Status: Not Submitted"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Teacher View: Submissions List -->
+            <LinearLayout
+                android:id="@+id/llTeacherView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Submissions"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_blue" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSubmissions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    tools:listitem="@layout/item_submission" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
