@@ -175,6 +175,15 @@ class CourseActivity : AppCompatActivity() {
         val tvSelectedFile = dialogView.findViewById<TextView>(R.id.tvSelectedFile)
         val spType = dialogView.findViewById<Spinner>(R.id.spItemType)
         
+        // MCQ Fields
+        val llMcq = dialogView.findViewById<LinearLayout>(R.id.llMcqSection)
+        val etQ = dialogView.findViewById<EditText>(R.id.etQuizQuestion)
+        val etA = dialogView.findViewById<EditText>(R.id.etQuizOptA)
+        val etB = dialogView.findViewById<EditText>(R.id.etQuizOptB)
+        val etC = dialogView.findViewById<EditText>(R.id.etQuizOptC)
+        val etD = dialogView.findViewById<EditText>(R.id.etQuizOptD)
+        val etAns = dialogView.findViewById<EditText>(R.id.etQuizCorrectIndex)
+
         tvSelectedFileRef = tvSelectedFile
         tempFileUri = itemToEdit?.contentUri ?: ""
 
@@ -187,6 +196,7 @@ class CourseActivity : AppCompatActivity() {
                 etLink.visibility = if (selectedType == "Video" || selectedType == "Document") View.VISIBLE else View.GONE
                 etDesc.visibility = if (selectedType == "Assignment") View.VISIBLE else View.GONE
                 btnUpload.visibility = if (selectedType != "Quiz") View.VISIBLE else View.GONE
+                llMcq.visibility = if (selectedType == "Quiz") View.VISIBLE else View.GONE
                 
                 if (selectedType == "Video") etLink.hint = "Enter Video URL (YouTube/MP4)"
             }
@@ -199,6 +209,18 @@ class CourseActivity : AppCompatActivity() {
             etLink.setText(it.contentUri)
             etDesc.setText(it.description)
             spType.setSelection(types.indexOf(it.type))
+            
+            if (it.type == "Quiz") {
+                val quiz = AppData.quizzes.find { q -> q.outlineItemId == it.id }
+                quiz?.let { q ->
+                    etQ.setText(q.question)
+                    etA.setText(q.options[0])
+                    etB.setText(q.options[1])
+                    etC.setText(q.options[2])
+                    etD.setText(q.options[3])
+                    etAns.setText(q.correctOptionIndex.toString())
+                }
+            }
         }
 
         btnUpload.setOnClickListener {
@@ -230,15 +252,31 @@ class CourseActivity : AppCompatActivity() {
                 }
             }
 
+            var newItemId = -1
             if (itemToEdit == null) {
-                AppData.addOutlineItem(this, OutlineItem(courseId = courseId, title = title, type = type, weekOrDay = weekDay, contentUri = finalUri, description = etDesc.text.toString()))
+                newItemId = AppData.addOutlineItem(this, OutlineItem(courseId = courseId, title = title, type = type, weekOrDay = weekDay, contentUri = finalUri, description = etDesc.text.toString()))
             } else {
                 val index = AppData.outlines.indexOf(itemToEdit)
                 if (index != -1) {
                     AppData.outlines[index] = itemToEdit.copy(title = title, type = type, weekOrDay = weekDay, contentUri = finalUri, description = etDesc.text.toString())
                     AppData.saveData(this)
+                    newItemId = itemToEdit.id
                 }
             }
+
+            // Save MCQ if Quiz
+            if (type == "Quiz" && newItemId != -1) {
+                val qText = etQ.text.toString().trim()
+                if (qText.isNotEmpty()) {
+                    val options = listOf(etA.text.toString(), etB.text.toString(), etC.text.toString(), etD.text.toString())
+                    val ansIdx = etAns.text.toString().toIntOrNull() ?: 0
+                    
+                    // Remove old quiz question for this item and add new one
+                    AppData.quizzes.removeAll { it.outlineItemId == newItemId }
+                    AppData.addQuiz(this, Quiz(courseId = courseId, outlineItemId = newItemId, question = qText, options = options, correctOptionIndex = ansIdx))
+                }
+            }
+
             loadOutlineData()
             adapter.notifyDataSetChanged()
             dialog.dismiss()
