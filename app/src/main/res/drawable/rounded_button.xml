@@ -5,14 +5,14 @@
         <shape android:shape="rectangle">
             <gradient
                 android:startColor="@color/primary_blue"
-                android:endColor="@color/primary_light"
+                android:endColor="@color/primary_variant"
                 android:angle="0" />
-            <corners android:radius="12dp" />
+            <corners android:radius="20dp" />
             <padding
-                android:bottom="12dp"
+                android:bottom="14dp"
                 android:left="24dp"
                 android:right="24dp"
-                android:top="12dp" />
+                android:top="14dp" />
         </shape>
     </item>
 </ripple>

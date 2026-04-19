@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Professional E-Learning Palette -->
-    <color name="primary_blue">#1A237E</color>
-    <color name="primary_light">#534BAE</color>
-    <color name="primary_dark">#000051</color>
-    <color name="secondary_teal">#00BFA5</color>
+    <!-- Modern Vibrant Palette -->
+    <color name="primary_blue">#2D5CFE</color>
+    <color name="primary_variant">#1A3BBA</color>
+    <color name="secondary_teal">#00D4BD</color>
 
-    <color name="background_light">#F5F7FA</color>
+    <color name="bg_gradient_start">#F8FAFF</color>
+    <color name="bg_gradient_end">#E8EFFF</color>
+
     <color name="surface_white">#FFFFFF</color>
+    <color name="background_light">#F5F8FF</color>
 
-    <color name="text_primary">#1C1B1F</color>
-    <color name="text_secondary">#49454F</color>
-    <color name="text_hint">#79747E</color>
+    <color name="text_main">#0A1629</color>
+    <color name="text_sub">#7D8592</color>
+    <color name="text_hint">#9EA5B1</color>
+    <color name="accent_orange">#FF9F43</color>
+    <color name="soft_red">#FF5B5B</color>
+    <color name="soft_green">#4CD964</color>
 
-    <color name="white">#FFFFFFFF</color>
-    <color name="black">#FF000000</color>
-
-    <!-- Restored colors to fix build errors -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC6</color>
-    <color name="teal_700">#FF018786</color>
-
-    <!-- Compatibility colors -->
-    <color name="grad_start">#1A237E</color>
-    <color name="grad_end">#3949AB</color>
-    <color name="error_color">#B3261E</color>
-    <color name="success_color">#2E7D32</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
     <color name="gray">#808080</color>
+
+    <!-- Compatibility -->
+    <color name="grad_start">#2D5CFE</color>
+    <color name="grad_end">#1A3BBA</color>
+    <color name="text_primary">#0A1629</color>
+    <color name="text_secondary">#7D8592</color>
+    <color name="primary_dark">#1A3BBA</color>
 </resources>
