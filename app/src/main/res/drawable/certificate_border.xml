@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer primary border -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="8dp" android:color="@color/primary_variant" />
+            <padding android:bottom="10dp" android:left="10dp" android:right="10dp" android:top="10dp" />
+        </shape>
+    </item>
+    <!-- Inner gold/teal accent border -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="2dp" android:color="@color/secondary_teal" />
+        </shape>
+    </item>
+</layer-list>

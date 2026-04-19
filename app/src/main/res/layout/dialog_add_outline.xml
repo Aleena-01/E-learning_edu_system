@@ -45,9 +45,10 @@
             android:layout_marginBottom="12dp">
 
             <TextView
+                android:id="@+id/tvMcqCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter First MCQ for this Quiz:"
+                android:text="Enter MCQ Question 1:"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
@@ -68,6 +69,15 @@
                 android:layout_height="wrap_content"
                 android:hint="Correct Option Index (0-3)"
                 android:inputType="number" />
+
+            <Button
+                android:id="@+id/btnAddAnotherMcq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Add Another MCQ"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
         </LinearLayout>
 
         <!-- Dynamic Fields Container -->

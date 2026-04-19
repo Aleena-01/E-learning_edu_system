@@ -7,6 +7,14 @@
         <item name="colorSecondary">@color/secondary_teal</item>
         <item name="android:windowBackground">@color/background_light</item>
         <item name="android:statusBarColor">@color/primary_dark</item>
+
+        <!-- Force black text in EditTexts -->
+        <item name="editTextStyle">@style/AppEditTextStyle</item>
+    </style>
+
+    <style name="AppEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/text_hint</item>
     </style>
 
     <style name="Theme.ElearningEduSystem" parent="Base.Theme.ElearningEduSystem" />

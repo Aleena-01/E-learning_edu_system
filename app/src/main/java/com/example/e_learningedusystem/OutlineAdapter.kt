@@ -3,7 +3,6 @@ package com.example.e_learningedusystem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +18,6 @@ class OutlineAdapter(
         fun onItemClick(item: OutlineItem)
         fun onEdit(item: OutlineItem)
         fun onDelete(item: OutlineItem, position: Int)
-        fun onMarkComplete(item: OutlineItem)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,7 +26,6 @@ class OutlineAdapter(
         val ivIcon: ImageView = view.findViewById(R.id.ivTypeIcon)
         val ivEdit: ImageView = view.findViewById(R.id.ivEditItem)
         val ivDelete: ImageView = view.findViewById(R.id.ivDeleteItem)
-        val btnMarkComplete: Button = view.findViewById(R.id.btnMarkComplete)
         val tvStatus: TextView = view.findViewById(R.id.tvStatus)
     }
 
@@ -52,7 +49,6 @@ class OutlineAdapter(
         if (isTeacher) {
             holder.ivEdit.visibility = View.VISIBLE
             holder.ivDelete.visibility = View.VISIBLE
-            holder.btnMarkComplete.visibility = View.GONE
             holder.tvStatus.visibility = View.GONE
             
             holder.ivEdit.setOnClickListener { listener.onEdit(item) }
@@ -64,13 +60,9 @@ class OutlineAdapter(
             val isComplete = AppData.isItemComplete(item.id, currentUserId)
             if (isComplete) {
                 holder.tvStatus.visibility = View.VISIBLE
-                holder.btnMarkComplete.visibility = View.GONE
+                holder.tvStatus.text = "COMPLETED"
             } else {
                 holder.tvStatus.visibility = View.GONE
-                holder.btnMarkComplete.visibility = View.VISIBLE
-                holder.btnMarkComplete.setOnClickListener { 
-                    listener.onMarkComplete(item)
-                }
             }
         }
 
